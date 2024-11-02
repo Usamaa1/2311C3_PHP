@@ -21,10 +21,10 @@ $insertPrepare = $conn->prepare($insertQuery);
 
 
 
-// $insertPrepare->bindParam(":username",$userName, PDO::PARAM_STR);
-// $insertPrepare->bindParam(":email",$email, PDO::PARAM_STR);
-// $insertPrepare->bindParam(":pass",$password, PDO::PARAM_STR);
-// $insertPrepare->bindParam(":city",$city, PDO::PARAM_STR);
+$insertPrepare->bindParam(":username",$userName, PDO::PARAM_STR);
+$insertPrepare->bindParam(":email",$email, PDO::PARAM_STR);
+$insertPrepare->bindParam(":pass",$password, PDO::PARAM_STR);
+$insertPrepare->bindParam(":city",$city, PDO::PARAM_STR);
 
 
 
@@ -32,9 +32,6 @@ $insertPrepare = $conn->prepare($insertQuery);
 // $insertPrepare->bindValue(":email","virus@ammar.com", PDO::PARAM_STR);
 // $insertPrepare->bindValue(":pass","213", PDO::PARAM_STR);
 // $insertPrepare->bindValue(":city","Lahore", PDO::PARAM_STR);
-
-
-
 
 
 $insertPrepare->execute();
@@ -49,29 +46,10 @@ $insertPrepare->execute();
 //     ]
 // );
 
-
-
-
-
 }
 
 
-
-
-
-
 ?>
-
-
-
-
-
-
-
-
-
-
-
 
 
 <!doctype html>
