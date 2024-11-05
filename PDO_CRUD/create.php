@@ -13,9 +13,50 @@ $email = $_POST['email'];
 $password = $_POST['password'];
 $city = $_POST['city'];
 
+$userImage = $_FILES['userImage'];
 
 
-$insertQuery = "INSERT INTO `pdo_users`(`username`,`email`, `password`, `city`) VALUES (:username,:email,:pass,:city)";
+echo "<pre>";
+print_r($userImage);
+echo "</pre>";
+
+
+if($userImage['size'] > 5000000)
+{
+    echo "<script>alert('Your Image size is too large')</script>";
+}
+else
+{
+
+
+    $extension = explode(".",$userImage['name']);
+
+    // print_r($extension);
+
+    $extension = $extension[1];
+
+    echo $extension;
+
+
+
+    $imageUniqueName = uniqid();
+    echo $imageUniqueName;
+
+    $imageName = $imageUniqueName . "." . $extension;
+
+    echo "<br>";
+    echo $imageName;
+
+
+
+
+    move_uploaded_file($userImage["tmp_name"],"images/".$imageName);
+
+
+
+
+
+$insertQuery = "INSERT INTO `pdo_users`(`username`,`email`, `password`, `city`,`userImage`) VALUES (:username,:email,:pass,:city,:imageName)";
 
 $insertPrepare = $conn->prepare($insertQuery);
 
@@ -25,6 +66,7 @@ $insertPrepare->bindParam(":username",$userName, PDO::PARAM_STR);
 $insertPrepare->bindParam(":email",$email, PDO::PARAM_STR);
 $insertPrepare->bindParam(":pass",$password, PDO::PARAM_STR);
 $insertPrepare->bindParam(":city",$city, PDO::PARAM_STR);
+$insertPrepare->bindParam(":imageName",$imageName, PDO::PARAM_STR);
 
 
 
@@ -46,6 +88,11 @@ $insertPrepare->execute();
 //     ]
 // );
 
+
+
+
+
+}
 }
 
 
@@ -66,7 +113,7 @@ $insertPrepare->execute();
     <h1 class="text-center">User Registration Form!</h1>
     <div class="container">
         <div class="row">
-            <form class="row g-3" method="post">
+            <form class="row g-3" method="post" enctype="multipart/form-data">
                 <div class="col-md-12">
                     <label for="inputEmail4" class="form-label">Username</label>
                     <input type="text" class="form-control" name="userName">
@@ -82,6 +129,10 @@ $insertPrepare->execute();
                 <div class="col-md-12">
                     <label for="inputCity" class="form-label">City</label>
                     <input type="text" class="form-control" name="city">
+                </div>
+                <div class="col-md-12">
+                    <label for="inputCity" class="form-label">User Image</label>
+                    <input type="file" class="form-control" name="userImage" accept="image/png,image/jpg,image/jpeg">
                 </div>
 
                 <div class="col-12">

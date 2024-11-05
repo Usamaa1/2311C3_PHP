@@ -43,6 +43,7 @@ $viewData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
                 <thead>
                     <tr>
                         <th scope="col">User Id</th>
+                        <th scope="col">User Image</th>
                         <th scope="col">User Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Password</th>
@@ -58,13 +59,14 @@ $viewData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
                     ?>
                         <tr>
                             <td><?= $data['userId'] ?></td>
+                            <td><img src="images/<?= $data['userImage'] ?>" width="100px" alt=""></td>
                             <td><?= $data['username'] ?></td>
                             <td><?= $data['email'] ?></td>
                             <td><?= $data['password'] ?></td>
                             <td><?= $data['city'] ?></td>
                             <td><?= $data['registrationTime'] ?></td>
                             <td>
-                            <a href="" style="color: black;"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <a href="update.php?upId=<?= $data['userId'] ?>" style="color: black;"><i class="fa-solid fa-pen-to-square"></i></a>
                             <a href="delete.php?delId=<?= $data['userId'] ?>" style="color: black;"><i class="fa-solid fa-trash"></i></a>
                             </td>
                         </tr>
