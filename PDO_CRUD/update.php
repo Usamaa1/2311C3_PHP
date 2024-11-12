@@ -32,10 +32,55 @@ if(isset($_POST['btn']))
     $email = $_POST['email'];
     $password = $_POST['password'];
     $city = $_POST['city'];
+
+
+
+    $userImage = $_FILES['userImage'];
+
+
+// echo "<pre>";
+// print_r($userImage);
+// echo "</pre>";
+
+// echo empty($userImage["name"]) ? "Image Not Found" : "Image Found";
+
+// $image = empty($userImage["name"]) ?  $viewData["userImage"] : $userImage["name"];
+
+// echo $image;
+
+
+
+if($userImage['size'] > 5000000)
+{
+    echo "<script>alert('Your Image size is too large')</script>";
+}
+else
+{
+
+    $extension = explode(".",$userImage['name']);
+
+    // print_r($extension);
+
+    $extension = $extension[1];
+
+    echo $extension;
+
+
+
+    $imageUniqueName = uniqid();
+    echo $imageUniqueName;
+
+    $imageName = $imageUniqueName . "." . $extension;
+
+    // echo "<br>";
+    // echo $imageName;
+
+    move_uploaded_file($userImage["tmp_name"],"images/".$imageName);
+    $image = empty($userImage["name"]) ?  $viewData["userImage"] : $imageName;
     
     
     
-    $updateQuery = "UPDATE pdo_users SET username = :username, email = :email, password = :pass, city = :city WHERE userId = :userId";
+    $updateQuery = "UPDATE pdo_users SET username = :username, email = :email, password = :pass, city = :city, userImage = :userImage WHERE userId = :userId";
     
     $updatePrepare = $conn->prepare($updateQuery);
     
@@ -45,6 +90,7 @@ if(isset($_POST['btn']))
     $updatePrepare->bindParam(":email",$email, PDO::PARAM_STR);
     $updatePrepare->bindParam(":pass",$password, PDO::PARAM_STR);
     $updatePrepare->bindParam(":city",$city, PDO::PARAM_STR);
+    $updatePrepare->bindParam(":userImage",$image, PDO::PARAM_STR);
     $updatePrepare->bindParam(":userId",$upId, PDO::PARAM_STR);
     
     
@@ -52,7 +98,7 @@ if(isset($_POST['btn']))
     {
         header("location:view.php");
     }
-    
+}
     
 }
 // UPDATING DATA END
@@ -90,7 +136,7 @@ if(isset($_POST['btn']))
     <h1 class="text-center">User Update!</h1>
     <div class="container">
         <div class="row">
-            <form class="row g-3" method="post">
+            <form class="row g-3" method="post" enctype="multipart/form-data">
                 <div class="col-md-12">
                     <label for="inputEmail4" class="form-label">Username</label>
                     <input type="text" class="form-control" name="userName" value="<?= $viewData['username'] ?>">
@@ -107,7 +153,11 @@ if(isset($_POST['btn']))
                     <label for="inputCity" class="form-label">City</label>
                     <input type="text" class="form-control" name="city" value="<?= $viewData['city'] ?>">
                 </div>
-
+                <div class="col-md-12">
+                    <label for="inputCity" class="form-label">User Image</label>
+                    <input type="file" class="form-control" name="userImage">
+                    <img width="100px" src="images/<?= $viewData['userImage'] ?>" alt="" srcset="">
+                </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary" name="btn">Update User</button>
                 </div>

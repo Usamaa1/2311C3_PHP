@@ -14,12 +14,9 @@ $password = $_POST['password'];
 $city = $_POST['city'];
 
 $userImage = $_FILES['userImage'];
-
-
-echo "<pre>";
-print_r($userImage);
-echo "</pre>";
-
+// echo "<pre>";
+// print_r($userImage);
+// echo "</pre>";
 
 if($userImage['size'] > 5000000)
 {
@@ -28,39 +25,22 @@ if($userImage['size'] > 5000000)
 else
 {
 
-
     $extension = explode(".",$userImage['name']);
-
     // print_r($extension);
-
     $extension = $extension[1];
-
-    echo $extension;
-
-
-
+    // echo $extension;
     $imageUniqueName = uniqid();
-    echo $imageUniqueName;
-
+    // echo $imageUniqueName;
     $imageName = $imageUniqueName . "." . $extension;
-
-    echo "<br>";
-    echo $imageName;
-
-
-
-
+    // echo "<br>";
+    // echo $imageName;
     move_uploaded_file($userImage["tmp_name"],"images/".$imageName);
-
-
 
 
 
 $insertQuery = "INSERT INTO `pdo_users`(`username`,`email`, `password`, `city`,`userImage`) VALUES (:username,:email,:pass,:city,:imageName)";
 
 $insertPrepare = $conn->prepare($insertQuery);
-
-
 
 $insertPrepare->bindParam(":username",$userName, PDO::PARAM_STR);
 $insertPrepare->bindParam(":email",$email, PDO::PARAM_STR);
@@ -134,7 +114,6 @@ $insertPrepare->execute();
                     <label for="inputCity" class="form-label">User Image</label>
                     <input type="file" class="form-control" name="userImage" accept="image/png,image/jpg,image/jpeg">
                 </div>
-
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary" name="btn">Register</button>
                 </div>
