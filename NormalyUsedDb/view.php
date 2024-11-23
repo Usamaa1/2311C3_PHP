@@ -81,7 +81,7 @@ $result = mysqli_query($connection, $viewQuery);
                     <h5 class="card-title"><?= $row['prodName'];  ?></h5>
                     <h6 class="card-subtitle mb-2 text-body-secondary"><?= $row['prodPrice'];  ?></h6>
                     <p class="card-text"><?= $row['prodDesc'];  ?></p>
-                    <a href="" class="btn btn-warning">Update</a>
+                    <a href="update.php?updateId=<?= $row['prodId'] ?>" class="btn btn-warning">Update</a>
                     <a href="delete.php?delId=<?= $row['prodId'] ?>" class="btn btn-danger">Delete</a>
                 </div>
             </div>
