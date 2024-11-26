@@ -36,36 +36,144 @@
      <?php require "../partials/_sidebar.php" ?>
       <!-- partial -->
 
-      <div class="main-panel">        
+
+         <!-- connection -->
+      <!-- connection:../connection/connection.php -->
+     <?php require "../connection/connection.php" ?>
+      <!-- connection -->
+
+
+
+
+      <?php
+        $id = $_GET['id'];
+
+        $categoryQuery = "SELECT * FROM `categories`";
+        $categoryPrepare = $connect->prepare($categoryQuery);
+        $categoryPrepare->execute();
+        $CategroyData = $categoryPrepare->fetchAll(PDO::FETCH_ASSOC);
+
+
+        $viewQuery = "SELECT * FROM `products` JOIN categories ON products.category_id = categories.category_id WHERE prod_id = :id";
+        $viewPrepare = $connect->prepare($viewQuery);
+        $viewPrepare->bindParam(':id',$id,PDO::PARAM_INT);
+        $viewPrepare->execute();
+        $productData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
+        $productData = $productData[0];
+
+        
+    // echo "<pre>";
+    // print_r($productData);
+    // echo "</pre>";
+
+
+    if (isset($_POST['btn'])) {
+        
+      
+      $prodName = $_POST['prodName'];
+      $prodPrice = $_POST['prodPrice'];
+      $prodRating = $_POST['prodRating'];
+      $categoryId = $_POST['categoryId'];
+      $prodDesc = $_POST['prodDesc'];
+      $btn = $_POST['btn'];
+
+      $prodImage = $_FILES['prodImage'];
+
+
+      if($prodImage['size'] < 5000000)
+      {
+
+        $ext = explode(".",$prodImage['name']);
+
+        $ext= $ext[1];
+        $uniqueName = uniqid();
+
+        $imageName = $uniqueName . "." . $ext;
+
+
+        move_uploaded_file($prodImage['tmp_name'],"../images/$imageName");
+
+        $image = empty($prodImage['name']) ?  $productData['prod_image'] : $imageName;
+        $catId = empty($categoryId) ? $productData['category_id'] : $categoryId;
+
+
+        $insertQuery = "UPDATE `products` SET `prod_name`= :prodName,`prod_price`=:prodPrice,`prod_rating`=:prodRating,`prod_desc`=:prodDesc,`prod_image`=:imageName,`category_id`=:categoryId WHERE `prod_id` = :id";
+
+        $insertPrepare = $connect->prepare($insertQuery);
+        $insertPrepare->bindParam(':prodName', $prodName, PDO::PARAM_STR);
+        $insertPrepare->bindParam(':prodPrice', $prodPrice);
+        $insertPrepare->bindParam(':prodRating', $prodRating);
+        $insertPrepare->bindParam(':categoryId', $catId, PDO::PARAM_INT);
+        $insertPrepare->bindParam(':prodDesc', $prodDesc, PDO::PARAM_STR);
+        $insertPrepare->bindParam(':imageName', $image, PDO::PARAM_STR);
+        $insertPrepare->bindParam(':id', $id, PDO::PARAM_INT);
+
+        if ($insertPrepare->execute()) {
+          echo "<script>alert('Product edited successfully!')</script>";
+          header('location:viewProduct.php');
+        }
+      }
+      else
+      {
+        echo "<script>alert('Image size should be less than 5Mb')</script>";
+
+      }
+
+
+
+
+     
+    }
+        
+
+      ?>
+
+
+
+
+ 
+<div class="main-panel">
         <div class="content-wrapper">
           <div class="row">
-        <div class="col-12 grid-margin stretch-card">
+            <div class="col-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Edit Product</h4>
                   <p class="card-description">
-                   Edit Product
+                    Edit Product
                   </p>
-                  <form class="forms-sample">
+                  <form class="forms-sample" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                       <label for="exampleInputName1">Product Name</label>
-                      <input type="text" class="form-control" id="exampleInputName1" placeholder="Product Name">
+                      <input type="text" value="<?= $productData['prod_name'] ?>" class="form-control" id="exampleInputName1" name="prodName" placeholder="Product Name">
                     </div>
                     <div class="form-group">
                       <label for="exampleInputName1">Product Price</label>
-                      <input type="text" class="form-control" id="exampleInputName1" placeholder="Product Price">
+                      <input type="text" value="<?= $productData['prod_price'] ?>" class="form-control" id="exampleInputName1" name="prodPrice" placeholder="Product Price">
                     </div>
                     <div class="form-group">
                       <label for="exampleInputName1">Product Rating</label>
-                      <input type="text" class="form-control" id="exampleInputName1" placeholder="Product Ratting">
+                      <input type="text" value="<?= $productData['prod_rating'] ?>" class="form-control" id="exampleInputName1" name="prodRating" placeholder="Product Rating">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleSelectGender">Category</label>
+                      <select class="form-control" name="categoryId" id="exampleSelectGender">
+                        <option value="<?= $productData['category_id'] ?>" selected disabled><?= $productData['category_name'] ?>(Previous Option)</option>
+                        <?php foreach ($CategroyData as $c) { ?>
+
+                          <option value="<?= $c['category_id'] ?>"><?= $c['category_name'] ?></option>
+                        <?php } ?>
+                      </select>
                     </div>
                     <div class="form-group">
                       <label for="exampleTextarea1">Product Description</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4"></textarea>
+                      <textarea  class="form-control" id="exampleTextarea1" name="prodDesc" rows="4"><?= $productData['prod_desc'] ?></textarea>
                     </div>
+                    <img width="100px" src="../images/<?= $productData['prod_image'] ?>" alt="">
                     <div class="form-group">
                       <label>File upload</label>
-                      <input type="file" name="img[]" class="file-upload-default">
+
+                      <input type="file" name="prodImage" class="file-upload-default">
                       <div class="input-group col-xs-12">
                         <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
                         <span class="input-group-append">
@@ -73,7 +181,7 @@
                         </span>
                       </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mr-2">Edit Product</button>
+                    <button type="submit" class="btn btn-primary mr-2" name="btn">Edit Product</button>
                   </form>
                 </div>
               </div>

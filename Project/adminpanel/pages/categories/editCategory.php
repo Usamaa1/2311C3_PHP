@@ -35,6 +35,57 @@
       <!-- partial:partials/_sidebar.html -->
      <?php require "../partials/_sidebar.php" ?>
       <!-- partial -->
+      
+      
+      <!-- connection -->
+      <!-- connection:../connection/connection.php -->
+     <?php require "../connection/connection.php" ?>
+      <!-- connection -->
+
+
+
+
+      <?php
+        $id = $_GET['id'];
+
+
+        $viewQuery = "SELECT * FROM `categories` WHERE category_id = :id";
+        $viewPrepare = $connect->prepare($viewQuery);
+        $viewPrepare->bindParam(':id',$id,PDO::PARAM_INT);
+        $viewPrepare->execute();
+        $categoriesData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
+        $categoriesData = $categoriesData[0];
+
+
+
+
+        if(isset($_POST['btn']))
+        {
+          if(empty($_POST['categoryName']))
+          {
+            echo "<script>alert('Feild is Empty')</script>";
+          }
+          else
+          {
+            $categoryName = $_POST['categoryName'];
+
+            $insertQuery= "UPDATE `categories` SET `category_name`=:categoryName WHERE category_id = :id";
+
+            $insertPrepare = $connect->prepare($insertQuery);
+            $insertPrepare->bindParam(':categoryName',$categoryName,PDO::PARAM_STR);
+            $insertPrepare->bindParam(':id',$id,PDO::PARAM_INT);
+
+            if($insertPrepare->execute()){
+              echo "<script>alert('Category Edited successfully!')</script>";
+              header('location:viewCategory.php');
+            }
+
+          }
+        }
+
+      ?>
+
+
 
       <div class="main-panel">        
         <div class="content-wrapper">
@@ -46,13 +97,13 @@
                   <p class="card-description">
                    Edit Categories
                   </p>
-                  <form class="forms-sample">
+                  <form class="forms-sample" method="post">
                     <div class="form-group">
                       <label for="exampleInputName1">Category Name</label>
-                      <input type="text" class="form-control" id="exampleInputName1" placeholder="Category Name">
+                      <input type="text" class="form-control" id="exampleInputName1" value="<?= $categoriesData['category_name'] ?>" name="categoryName" placeholder="Category Name">
                     </div>
                 
-                    <button type="submit" class="btn btn-primary mr-2">Edit Category</button>
+                    <button type="submit" class="btn btn-primary mr-2" name="btn">Edit Category</button>
                   </form>
                 </div>
               </div>

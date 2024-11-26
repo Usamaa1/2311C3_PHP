@@ -1,4 +1,28 @@
 
+
+<?php require '../connection/connection.php' ?>
+
+
+<?php
+    
+    $viewQuery = "SELECT * FROM `products` JOIN categories ON products.category_id = categories.category_id;";
+    $viewPrepare = $connect->prepare($viewQuery);
+    $viewPrepare->execute();
+    $productsData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
+
+    // echo "<pre>";
+    // print_r($productsData);
+    // echo "</pre>";
+
+
+
+?>
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -207,6 +231,9 @@
                           Products Name
                           </th>
                           <th>
+                          Category Name
+                          </th>
+                          <th>
                           Products Price
                           </th>
                           <th>
@@ -225,31 +252,36 @@
                         </tr>
                       </thead>
                       <tbody>
+                      <?php foreach($productsData as $data){ ?>
                         <tr>
                           <td>
-                            3
+                          <?= $data['prod_id'] ?>
+                        </td>
+                        <td>
+                            <?= $data['prod_name'] ?>
                           </td>
-                          <td>
-                            John Richards
+                        <td>
+                            <?= $data['category_name'] ?>
                           </td>
                         
                           <td>
-                            Apr 12, 2015
+                          <?= $data['prod_price'] ?>
+                        </td>
+                        <td>
+                            <?= $data['prod_rating'] ?>
                           </td>
                           <td>
-                            Apr 12, 2015
+                            <?= $data['prod_desc'] ?>
                           </td>
                           <td>
-                            Apr 12, 2015
+                            <img src="../images/<?= $data['prod_image'] ?>" alt="">
                           </td>
                           <td>
-                            Apr 12, 2015
-                          </td>
-                          <td>
-                            Apr 12, 2015
+                          <a href="editProduct.php?id=<?= $data['prod_id']?>"><i class="mdi mdi-table-edit"></i></a>
+                         <a href="deleteProduct.php?id=<?= $data['prod_id']?>"><i class="mdi mdi-delete"></i></a>
                           </td>
                         </tr>
-                   
+                        <?php } ?>
                       </tbody>
                     </table>
                   </div>

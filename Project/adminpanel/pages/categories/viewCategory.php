@@ -1,4 +1,35 @@
 
+
+
+<?php require '../connection/connection.php' ?>
+
+
+<?php
+
+  $viewQuery = "SELECT * FROM `categories`";
+  $viewPrepare = $connect->prepare($viewQuery);
+  $viewPrepare->execute();
+  $categoriesData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -213,19 +244,21 @@
                         </tr>
                       </thead>
                       <tbody>
+                        <?php foreach($categoriesData as $data){ ?>
                         <tr>
                           <td>
-                            3
+                            <?= $data['category_id'] ?>
                           </td>
                           <td>
-                            John Richards
+                          <?= $data['category_name'] ?>
                           </td>
                         
                           <td>
-                            Apr 12, 2015
+                         <a href="editCategory.php?id=<?= $data['category_id']?>"><i class="mdi mdi-table-edit"></i></a>
+                         <a href="deleteCategory.php?id=<?= $data['category_id']?>"><i class="mdi mdi-delete"></i></a>
                           </td>
                         </tr>
-                   
+                          <?php } ?>
                       </tbody>
                     </table>
                   </div>
