@@ -1,6 +1,32 @@
 <?php
-	require "partial/navbar.php"
+	require "partial/navbar.php";
+	require 'connection/connection.php';
 ?>
+
+
+
+<?php
+
+
+	$prodId = $_GET['prodId'];
+
+
+
+
+	$productsQuery = 'SELECT * FROM `products` JOIN `categories` ON products.category_id = categories.category_id WHERE prod_id = :prodId';
+	$productsPrepare = $connect->prepare($productsQuery);
+	$productsPrepare->bindParam(':prodId',$prodId,PDO::PARAM_INT);
+	$productsPrepare->execute();
+	$productsData = $productsPrepare->fetch(PDO::FETCH_ASSOC);
+
+
+
+
+
+
+
+?>
+
 	<!-- Start Banner Area -->
 	<section class="banner-area organic-breadcrumb">
 		<div class="container">
@@ -25,27 +51,25 @@
 				<div class="col-lg-6">
 					<div class="s_Product_carousel">
 						<div class="single-prd-item">
-							<img class="img-fluid" src="img/category/s-p1.jpg" alt="">
+							<img class="img-fluid" src="../adminpanel/pages/images/<?= $productsData['prod_image'] ?>" alt="">
 						</div>
 						<div class="single-prd-item">
-							<img class="img-fluid" src="img/category/s-p1.jpg" alt="">
+							<img class="img-fluid" src="../adminpanel/pages/images/<?= $productsData['prod_image'] ?>" alt="">
 						</div>
 						<div class="single-prd-item">
-							<img class="img-fluid" src="img/category/s-p1.jpg" alt="">
+							<img class="img-fluid" src="../adminpanel/pages/images/<?= $productsData['prod_image'] ?>" alt="">
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-5 offset-lg-1">
 					<div class="s_product_text">
-						<h3>Faded SkyBlu Denim Jeans</h3>
-						<h2>$149.99</h2>
+						<h3><?=$productsData['prod_name'] ?></h3>
+						<h2>$<?=$productsData['prod_price'] ?></h2>
 						<ul class="list">
-							<li><a class="active" href="#"><span>Category</span> : Household</a></li>
+							<li><a class="active" href="#"><span>Category</span> : <?=$productsData['category_name'] ?></a></li>
 							<li><a href="#"><span>Availibility</span> : In Stock</a></li>
 						</ul>
-						<p>Mill Oil is an innovative oil filled radiator with the most modern technology. If you are looking for
-							something that can make your interior look awesome, and at the same time give you the pleasant warm feeling
-							during the winter.</p>
+						<p><?=$productsData['prod_desc'] ?></p>
 						<div class="product_count">
 							<label for="qty">Quantity:</label>
 							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
