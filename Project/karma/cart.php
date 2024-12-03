@@ -1,6 +1,42 @@
 <?php
 	require "partial/navbar.php";
+    require "connection/connection.php";
 ?>
+
+
+<?php 
+
+    $cartViewQuery = 'SELECT * FROM `cart` JOIN products ON products.prod_id = cart.prod_id WHERE user_id = 3';
+    $cartViewPrepare = $connect->prepare($cartViewQuery);
+    $cartViewPrepare->execute();
+    $cartData = $cartViewPrepare->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+    $subTotalQuery= 'SELECT ROUND(SUM(products.prod_price * cart.quantity),2) as subTotal FROM `cart` JOIN products ON products.prod_id = cart.prod_id WHERE user_id = 3';
+
+    $subTotalPrepare = $connect->prepare($subTotalQuery);
+    $subTotalPrepare->execute();
+    $subTotal = $subTotalPrepare->fetch(PDO::FETCH_ASSOC);
+
+
+
+
+
+    // echo "<pre>";
+    // print_r($cartData);
+    // echo "</pre>";
+    // echo "<pre>";
+    // print_r($subTotal);
+    // echo "</pre>";
+
+?>
+
+
+
+
+
+
     <!-- Start Banner Area -->
     <section class="banner-area organic-breadcrumb">
         <div class="container">
@@ -29,26 +65,38 @@
                                 <th scope="col">Price</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Total</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php
+
+                            if(empty($cartData))
+                            {
+                                echo "<p>Your cart is empty</p>";
+                            }
+
+
+
+                            foreach($cartData as $cData){
+                            ?>
                             <tr>
                                 <td>
                                     <div class="media">
                                         <div class="d-flex">
-                                            <img src="img/cart.jpg" alt="">
+                                            <img width="100" src="../adminpanel/pages/images/<?= $cData['prod_image'] ?>" alt="">
                                         </div>
                                         <div class="media-body">
-                                            <p>Minimalistic shop for multipurpose use</p>
+                                            <p><?= $cData['prod_name'] ?></p>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <h5>$360.00</h5>
+                                    <h5>$<?= $cData['prod_price'] ?></h5>
                                 </td>
                                 <td>
                                     <div class="product_count">
-                                        <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:"
+                                        <input type="text" name="qty" id="sst" maxlength="12" value="<?= $cData['quantity'] ?>" title="Quantity:"
                                             class="input-text qty">
                                         <button onclick=""
                                             class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
@@ -57,65 +105,13 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <h5>$720.00</h5>
+                                    <h5>$<?= $cData['quantity'] * $cData['prod_price'] ?></h5>
+                                </td>
+                                <td>
+                                    <a href="cartDelete.php?cartId=<?= $cData['cart_id'] ?>"><span class="ti-close"></span></a>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <div class="media">
-                                        <div class="d-flex">
-                                            <img src="img/cart.jpg" alt="">
-                                        </div>
-                                        <div class="media-body">
-                                            <p>Minimalistic shop for multipurpose use</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$360.00</h5>
-                                </td>
-                                <td>
-                                    <div class="product_count">
-                                        <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:"
-                                            class="input-text qty">
-                                        <button onclick=""
-                                            class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-                                        <button onclick=""
-                                            class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$720.00</h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="media">
-                                        <div class="d-flex">
-                                            <img src="img/cart.jpg" alt="">
-                                        </div>
-                                        <div class="media-body">
-                                            <p>Minimalistic shop for multipurpose use</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$360.00</h5>
-                                </td>
-                                <td>
-                                    <div class="product_count">
-                                        <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:"
-                                            class="input-text qty">
-                                        <button onclick=""
-                                            class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-                                        <button onclick=""
-                                            class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$720.00</h5>
-                                </td>
-                            </tr>
+                <?php  } ?>
                             <tr class="bottom_button">
                                 <td>
                                     <a class="gray_btn" href="#">Update Cart</a>
@@ -145,41 +141,8 @@
                                     <h5>Subtotal</h5>
                                 </td>
                                 <td>
-                                    <h5>$2160.00</h5>
-                                </td>
-                            </tr>
-                            <tr class="shipping_area">
-                                <td>
-
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <h5>Shipping</h5>
-                                </td>
-                                <td>
-                                    <div class="shipping_box">
-                                        <ul class="list">
-                                            <li><a href="#">Flat Rate: $5.00</a></li>
-                                            <li><a href="#">Free Shipping</a></li>
-                                            <li><a href="#">Flat Rate: $10.00</a></li>
-                                            <li class="active"><a href="#">Local Delivery: $2.00</a></li>
-                                        </ul>
-                                        <h6>Calculate Shipping <i class="fa fa-caret-down" aria-hidden="true"></i></h6>
-                                        <select class="shipping_select">
-                                            <option value="1">Bangladesh</option>
-                                            <option value="2">India</option>
-                                            <option value="4">Pakistan</option>
-                                        </select>
-                                        <select class="shipping_select">
-                                            <option value="1">Select a State</option>
-                                            <option value="2">Select a State</option>
-                                            <option value="4">Select a State</option>
-                                        </select>
-                                        <input type="text" placeholder="Postcode/Zipcode">
-                                        <a class="gray_btn" href="#">Update Details</a>
-                                    </div>
+                                 
+                                    <h5>$<?= $subTotal['subTotal'] ?></h5>
                                 </td>
                             </tr>
                             <tr class="out_button_area">
@@ -195,7 +158,7 @@
                                 <td>
                                     <div class="checkout_btn_inner d-flex align-items-center">
                                         <a class="gray_btn" href="#">Continue Shopping</a>
-                                        <a class="primary-btn" href="#">Proceed to checkout</a>
+                                        <a class="primary-btn" href="checkout.php">Proceed to checkout</a>
                                     </div>
                                 </td>
                             </tr>

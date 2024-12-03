@@ -20,6 +20,22 @@
 	$productsData = $productsPrepare->fetch(PDO::FETCH_ASSOC);
 
 
+	if(isset($_POST['addToCartBtn']))
+	{
+		$qty = $_POST['qty'];
+		$addToCartQuery = 'INSERT INTO `cart`(`prod_id`, `quantity`, `user_id`) VALUES (:prodId, :quantity, :userId)';
+		$addToCartPrepare = $connect->prepare($addToCartQuery);
+		$addToCartPrepare->bindParam(':prodId',$prodId, PDO::PARAM_INT);
+		$addToCartPrepare->bindParam(':quantity',$qty, PDO::PARAM_INT);
+		$addToCartPrepare->bindValue(':userId',3, PDO::PARAM_INT);
+		if($addToCartPrepare->execute()){
+			echo "<script>alert('Added to Cart')</script>";
+		}
+		
+	}
+
+
+
 
 
 
@@ -70,19 +86,20 @@
 							<li><a href="#"><span>Availibility</span> : In Stock</a></li>
 						</ul>
 						<p><?=$productsData['prod_desc'] ?></p>
+						<form method="post">
 						<div class="product_count">
 							<label for="qty">Quantity:</label>
-							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+							<input type="text" name="qty" id="sst" maxlength="12"  title="Quantity:" class="input-text qty">
 							<button onclick=""
 							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
 							<button onclick=""
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
 						</div>
 						<div class="card_area d-flex align-items-center">
-							<a class="primary-btn" href="#">Add to Cart</a>
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+							<button class="primary-btn" name="addToCartBtn" type="submit">Add to Cart</button>
+
 						</div>
+						</form>
 					</div>
 				</div>
 			</div>
