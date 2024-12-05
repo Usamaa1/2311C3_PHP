@@ -33,6 +33,32 @@
             </div>
           </li>
           <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#country" aria-expanded="false" aria-controls="country">
+              <i class="icon-layout menu-icon"></i>
+              <span class="menu-title">Country</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="country">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="../country/addCountry.php">Add Country</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../country/viewCountry.php">View Country</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#cities" aria-expanded="false" aria-controls="cities">
+              <i class="icon-layout menu-icon"></i>
+              <span class="menu-title">Cities</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="cities">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="../cities/addCities.php">Add City</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../cities/viewCities.php">View Cities</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <i class="icon-layout menu-icon"></i>
               <span class="menu-title">UI Elements</span>

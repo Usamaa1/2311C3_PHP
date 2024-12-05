@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Skydash Admin</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="../../vendors/feather/feather.css">
+  <link rel="stylesheet" href="../../vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="../../vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="../../vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="../../vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/css" href="../../js/select.dataTables.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="../../css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="../../images/favicon.png" />
+</head>
+
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <?php require "../partials/_navbar.php"; ?>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+      <?php require "../partials/_settings-panel.php" ?>
+
+      <!-- partial -->
+      <!-- partial:partials/_sidebar.html -->
+      <?php require "../partials/_sidebar.php" ?>
+      <!-- partial -->
+
+
+      <!-- connection -->
+      <!-- connection:../connection/connection.php -->
+      <?php require "../connection/connection.php" ?>
+      <!-- connection -->
+
+
+
+
+      <?php
+
+      $viewQuery = "SELECT * FROM `country`";
+      $viewPrepare = $connect->prepare($viewQuery);
+      $viewPrepare->execute();
+      $countryData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+      if (isset($_POST['btn'])) {
+        if (empty($_POST['cityName'])) {
+          echo "<script>alert('Feild is Empty')</script>";
+        } else {
+
+          try {
+            $cityName = $_POST['cityName'];
+            $countryId = $_POST['countryId'];
+  
+            $insertQuery = "INSERT INTO `cities`(`city_name`, `country_id`) VALUES (:cityName, :countryId)";
+  
+            $insertPrepare = $connect->prepare($insertQuery);
+            $insertPrepare->bindParam(':cityName', $cityName, PDO::PARAM_STR);
+            $insertPrepare->bindParam(':countryId', $countryId, PDO::PARAM_STR);
+  
+            if ($insertPrepare->execute()) {
+              echo "<script>alert('City added successfully!')</script>";
+            }
+          } catch (PDOException $e) {
+            echo "<script>alert('An error occured while running adding City')</script>";
+      
+          }
+
+        }
+      }
+
+      ?>
+
+
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Add City</h4>
+                  <p class="card-description">
+                    Add City
+                  </p>
+                  <form class="forms-sample" method="post">
+                    <div class="form-group">
+                      <label for="exampleInputName1">Select Country</label>
+                      <select name="countryId" class="form-control">
+                        <option selected disabled>Choose your country..</option>
+                        <?php foreach($countryData as $cData){ ?>
+                        <option value="<?= $cData['country_id'] ?>"><?= $cData['country_name'] ?></option>
+                        <?php } ?>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputName1">City Name</label>
+                      <input type="text" class="form-control" id="exampleInputName1" name="cityName" placeholder="City Name">
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary mr-2" name="btn">Add City</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+            <?php require "../partials/_footer.php" ?>
+
+          </div>
+        </div>
+      </div>
