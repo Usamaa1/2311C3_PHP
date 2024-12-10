@@ -27,7 +27,7 @@
 		$addToCartPrepare = $connect->prepare($addToCartQuery);
 		$addToCartPrepare->bindParam(':prodId',$prodId, PDO::PARAM_INT);
 		$addToCartPrepare->bindParam(':quantity',$qty, PDO::PARAM_INT);
-		$addToCartPrepare->bindValue(':userId',3, PDO::PARAM_INT);
+		$addToCartPrepare->bindValue(':userId',4, PDO::PARAM_INT);
 		if($addToCartPrepare->execute()){
 			echo "<script>alert('Added to Cart')</script>";
 		}
