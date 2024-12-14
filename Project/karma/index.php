@@ -1,5 +1,8 @@
 <?php
-	require "partial/navbar.php"
+	require "partial/navbar.php";
+
+
+
 ?>
 	<!-- start banner Area -->
 	<section class="banner-area">

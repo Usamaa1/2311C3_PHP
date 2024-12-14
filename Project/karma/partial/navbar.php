@@ -1,3 +1,30 @@
+<?php
+
+ob_start();
+
+
+
+session_start();
+
+
+
+
+if(!isset($_SESSION['userId']))
+{
+	header("location:login.php");
+}
+
+
+
+
+
+
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -87,7 +114,16 @@
 							<li class="nav-item">
 								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
 							</li>
+							<li class="nav-items">
+								<?=$_SESSION['username'] ?>
+							</li>
+							<li class="nav-items">
+
+								<a href="logout.php" class="search"><span class="ti-arrow-circle-down" id="search"></span></a>
+
+							</li>
 						</ul>
+					
 					</div>
 				</div>
 			</nav>
@@ -103,3 +139,5 @@
 		</div>
 	</header>
 	<!-- End Header Area -->
+
+	
