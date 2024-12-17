@@ -1,57 +1,195 @@
 <?php
 
+ob_start();
 session_start();
 
 require "connection/connection.php";
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-
-if(isset($_SESSION['userId']))
+if(isset($_POST['forgotBtn']))
 {
-	header("location:index.php");
-}
 
-
-
-
-if (isset($_POST['loginBtn'])) {
-
-	$email = $_POST['email'];
-	$password = $_POST['password'];
-
+	$userEmail = $_POST['email'];
+	
+	
+	
+	$verifyEmailQuery = "SELECT * FROM `users` WHERE `email` = :email";
+	$verifyEmailPrepare = $connect->prepare($verifyEmailQuery);
+	$verifyEmailPrepare->bindParam(':email',$userEmail,PDO::PARAM_STR);
+	$verifyEmailPrepare->execute();
+	$verifyEmailData = $verifyEmailPrepare->fetch(PDO::FETCH_ASSOC);
 	
 
-	$loginQuery = "SELECT * FROM `users` WHERE `email` = :email";
-	$loginPrepare = $connect->prepare($loginQuery);
-	$loginPrepare->bindParam(':email', $email);
-	$loginPrepare->execute();
-	$userExist = $loginPrepare->fetch(PDO::FETCH_ASSOC);
-	if ($userExist) {
+	if($verifyEmailData['user_id'])
+	{
+
+		
+
+	$randomCode = rand(1111,9999);
+	$_SESSION['forgotOTP'] = $randomCode;
+	$_SESSION['userForgotPassId'] = $verifyEmailData['user_id'];
+
+//Load Composer's autoloader
+require '../vendor/autoload.php';
+
+//Create an instance; passing `true` enables exceptions
+$mail = new PHPMailer(true);
+
+try {
+    //Server settings
+    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+    $mail->isSMTP();                                            //Send using SMTP
+    $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+    $mail->Username   = 'zainaijaz51@gmail.com';                     //SMTP username
+    $mail->Password   = 'boyfwovazpwdqcpj';                               //SMTP password
+    $mail->SMTPSecure = 'tls';            //Enable implicit TLS encryption
+    $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+
+    //Recipients
+    $mail->setFrom('zainaijaz51@gmail.com', 'Mailer');
+    $mail->addAddress($userEmail, 'Joe User');     //Add a recipient
+    // $mail->addAddress('ellen@example.com');               //Name is optional
+    // $mail->addReplyTo('info@example.com', 'Information');
+    // $mail->addCC('cc@example.com');
+    // $mail->addBCC('bcc@example.com');
+
+    //Attachments
+    // $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+    // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+
+    //Content
+    $mail->isHTML(true);                                  //Set email format to HTML
+    $mail->Subject = 'Forgot Password';
+    $mail->Body    = "<!DOCTYPE html>
+	<html lang='en'>
+	<head>
+		<meta charset='UTF-8'>
+		<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+		<title>OTP Verification</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 0;
+				padding: 0;
+				background-color: #f6f6f6;
+			}
+			.email-container {
+				width: 100%;
+				max-width: 600px;
+				margin: 0 auto;
+				background-color: #ffffff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			}
+			.email-header {
+				text-align: center;
+				padding: 10px 0;
+				border-bottom: 1px solid #e0e0e0;
+			}
+			.email-header img {
+				max-width: 150px;
+			}
+			.email-body {
+				padding: 20px;
+			}
+			h1 {
+				color: #333333;
+				font-size: 24px;
+				text-align: center;
+			}
+			p {
+				font-size: 16px;
+				color: #666666;
+				line-height: 1.6;
+			}
+			.otp-container {
+				background-color: #f0f0f0;
+				border: 2px solid #e0e0e0;
+				padding: 20px;
+				text-align: center;
+				font-size: 24px;
+				font-weight: bold;
+				color: #333333;
+				margin: 20px 0;
+				border-radius: 8px;
+			}
+			.cta-button {
+				display: block;
+				width: 200px;
+				margin: 20px auto;
+				padding: 12px;
+				background-color: #4CAF50;
+				color: white;
+				text-align: center;
+				text-decoration: none;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+			.cta-button:hover {
+				background-color: #45a049;
+			}
+			.email-footer {
+				text-align: center;
+				padding: 10px;
+				font-size: 14px;
+				color: #999999;
+			}
+			.email-footer a {
+				color: #4CAF50;
+				text-decoration: none;
+			}
+			.email-footer a:hover {
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+	<body>
+		<div class='email-container'>
+			<div class='email-header'>
+				<img src='https://aptech-education.com.pk/assets/images/logo.png' alt='Your Brand Logo'>
+			</div>
+			<div class='email-body'>
+				<h1>OTP Verification</h1>
+				<p>Hello,</p>
+				<p>We received a request to verify your identity using a One-Time Password (OTP). Please use the OTP below to complete your verification process:</p>
+				<div class='otp-container'>
+				$randomCode
+				</div>
+				<p>This OTP is valid for the next 10 minutes. If you did not request this, please ignore this email.</p>
+				<p>For security reasons, please do not share this OTP with anyone.</p>
+				<p>If you encounter any issues, please feel free to <a href='https://support.yourwebsite.com'>contact support</a>.</p>
+			</div>
+			<div class='email-footer'>
+				<p>© 2024 Aptech. All rights reserved.</p>
+			</div>
+		</div>
+	</body>
+	</html>
+	";
 
 
-
-		if(password_verify($password, $userExist['password']))
-		{
-
-			$_SESSION['userId'] = $userExist['user_id'];
-			$_SESSION['username'] = $userExist['first_name'];
-			$_SESSION['email'] = $userExist['email'];
-
-			echo "<script>alert('Login Successfull')</script>";
-			header("location: index.php");
-		}	
-		else {
-			echo "<script>alert('Wrong password')</script>";
-		}
-
-
-
-
-	} 
-	else {
-		echo "<script>alert('Email is invalid')</script>";
-	}
+    $mail->send();
+    echo 'Message has been sent';
+	header('location: forgotPasswordCode.php');
+} catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
 
+	}
+
+	else
+	{
+		echo "<script>alert('Incorrect email')</script>";
+	}
+	
+	
+	
+
+}
 
 
 
@@ -176,10 +314,10 @@ if (isset($_POST['loginBtn'])) {
 	<div class="container">
 		<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
 			<div class="col-first">
-				<h1>Login</h1>
+				<h1>Forgot Password</h1>
 				<nav class="d-flex align-items-center">
 					<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-					<a href="category.html">Login</a>
+					<a href="#">Forgot Password</a>
 				</nav>
 			</div>
 		</div>
@@ -197,7 +335,7 @@ if (isset($_POST['loginBtn'])) {
 					<div class="hover">
 						<h4>New to our website?</h4>
 						<p>There are advances being made in science and technology everyday, and a good example of this is the</p>
-						<a class="primary-btn" href="registration.php">Create an Account</a>
+						<a class="primary-btn" href="registration.php">Forgot Password</a>
 					</div>
 				</div>
 			</div>
@@ -208,18 +346,9 @@ if (isset($_POST['loginBtn'])) {
 						<div class="col-md-12 form-group">
 							<input type="email" required class="form-control" id="name" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
 						</div>
+
 						<div class="col-md-12 form-group">
-							<input type="password" required class="form-control" id="name" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
-						</div>
-						<div class="col-md-12 form-group">
-							<div class="creat_account">
-								<input type="checkbox" id="f-option2" name="selector">
-								<label for="f-option2">Keep me logged in</label>
-							</div>
-						</div>
-						<div class="col-md-12 form-group">
-							<button type="submit" value="submit" name="loginBtn" class="primary-btn">Log In</button>
-							<a href="forgotPasswordEmail.php">Forgot Password?</a>
+							<button type="submit" value="submit" name="forgotBtn" class="primary-btn">Send Code</button>
 						</div>
 					</form>
 				</div>
@@ -231,5 +360,6 @@ if (isset($_POST['loginBtn'])) {
 
 <!--================End Login Box Area =================-->
 <?php
-require "partial/footer.php"
+require "partial/footer.php";
+ob_end_flush();
 ?>

@@ -5,53 +5,33 @@ session_start();
 require "connection/connection.php";
 
 
-if(isset($_SESSION['userId']))
+
+if(isset($_POST['updatePassBtn']))
 {
-	header("location:index.php");
-}
+
+
+	$forgotPass = $_POST['forgotPass'];
+	$forgotPass = password_hash($forgotPass,PASSWORD_BCRYPT);
 
 
 
 
-if (isset($_POST['loginBtn'])) {
-
-	$email = $_POST['email'];
-	$password = $_POST['password'];
-
-	
-
-	$loginQuery = "SELECT * FROM `users` WHERE `email` = :email";
-	$loginPrepare = $connect->prepare($loginQuery);
-	$loginPrepare->bindParam(':email', $email);
-	$loginPrepare->execute();
-	$userExist = $loginPrepare->fetch(PDO::FETCH_ASSOC);
-	if ($userExist) {
-
-
-
-		if(password_verify($password, $userExist['password']))
-		{
-
-			$_SESSION['userId'] = $userExist['user_id'];
-			$_SESSION['username'] = $userExist['first_name'];
-			$_SESSION['email'] = $userExist['email'];
-
-			echo "<script>alert('Login Successfull')</script>";
-			header("location: index.php");
-		}	
-		else {
-			echo "<script>alert('Wrong password')</script>";
-		}
-
-
-
-
-	} 
-	else {
-		echo "<script>alert('Email is invalid')</script>";
+	$updatePassQuery = "UPDATE `users` SET `password`= :pass WHERE `user_id` = :userId";
+	$updatePassPrepare = $connect->prepare($updatePassQuery);
+	$updatePassPrepare->bindParam(':pass',	$forgotPass,PDO::PARAM_STR);
+	$updatePassPrepare->bindParam(':userId',$_SESSION['userForgotPassId'],PDO::PARAM_STR);
+	if($updatePassPrepare->execute())
+	{
+		echo "<script>alert('Your Password is reset')</script>";
+		session_destroy();
+		header('location: login.php');
 	}
 }
 
+
+
+
+	
 
 
 
@@ -176,10 +156,10 @@ if (isset($_POST['loginBtn'])) {
 	<div class="container">
 		<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
 			<div class="col-first">
-				<h1>Login</h1>
+				<h1>Forgot Password</h1>
 				<nav class="d-flex align-items-center">
 					<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-					<a href="category.html">Login</a>
+					<a href="#">Forgot Password</a>
 				</nav>
 			</div>
 		</div>
@@ -197,7 +177,7 @@ if (isset($_POST['loginBtn'])) {
 					<div class="hover">
 						<h4>New to our website?</h4>
 						<p>There are advances being made in science and technology everyday, and a good example of this is the</p>
-						<a class="primary-btn" href="registration.php">Create an Account</a>
+						<a class="primary-btn" href="registration.php">Forgot Password</a>
 					</div>
 				</div>
 			</div>
@@ -205,21 +185,13 @@ if (isset($_POST['loginBtn'])) {
 				<div class="login_form_inner">
 					<h3>Log in to enter</h3>
 					<form class="row login_form" method="post">
+					
 						<div class="col-md-12 form-group">
-							<input type="email" required class="form-control" id="name" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
+							<input type="password" required class="form-control" id="name" name="forgotPass" placeholder="Update Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Update Password'">
 						</div>
+
 						<div class="col-md-12 form-group">
-							<input type="password" required class="form-control" id="name" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
-						</div>
-						<div class="col-md-12 form-group">
-							<div class="creat_account">
-								<input type="checkbox" id="f-option2" name="selector">
-								<label for="f-option2">Keep me logged in</label>
-							</div>
-						</div>
-						<div class="col-md-12 form-group">
-							<button type="submit" value="submit" name="loginBtn" class="primary-btn">Log In</button>
-							<a href="forgotPasswordEmail.php">Forgot Password?</a>
+							<button type="submit" value="submit" name="updatePassBtn" class="primary-btn">Submit</button>
 						</div>
 					</form>
 				</div>
