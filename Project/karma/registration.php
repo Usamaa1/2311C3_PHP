@@ -236,34 +236,31 @@ if (isset($_POST['registerBtn'])) {
 					<h3>Register</h3>
 					<form class="row login_form" method="post" id="contactForm" novalidate="novalidate">
 						<div class="col-md-12 form-group">
-							<input type="text" class="form-control" id="name" name="firstName" placeholder="First Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'First Name'">
+							<input type="text" class="form-control"  name="firstName" placeholder="First Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'First Name'">
 						</div>
 						<div class="col-md-12 form-group">
-							<input type="text" class="form-control" id="name" name="lastName" placeholder="Last Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last Name'">
+							<input type="text" class="form-control"  name="lastName" placeholder="Last Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last Name'">
 						</div>
 						<div class="col-md-12 form-group">
-							<input type="email" class="form-control" id="name" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
+							<input type="email" class="form-control"  name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
 						</div>
 						<div class="col-md-12 form-group">
-							<input type="password" class="form-control" id="name" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+							<input type="password" class="form-control" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
 						</div>
 						<div class="col-md-12 form-group">
-							<input type="text" class="form-control" id="name" name="phoneNumber" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
+							<input type="text" class="form-control"  name="phoneNumber" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
 						</div>
-						<div class="col-md-12 form-group">
-							<select name="country" id="">
+						<div class="col-md-12 form-group" >
+							<select name="country" id="countryId" onchange="countryFunc()" class="form-control">
 								<option value="" selected disabled>Select your Country</option>
 								<?php foreach ($countryData as $cd) { ?>
 									<option value="<?= $cd['country_id'] ?>"><?= $cd['country_name'] ?></option>
 								<?php } ?>
 							</select>
 						</div>
-						<div class="col-md-12 form-group">
-							<select name="city" id="">
-								<option value="" selected disabled>Select your City</option>
-								<?php foreach ($citiesData as $cd) { ?>
-									<option value="<?= $cd['city_id'] ?>"><?= $cd['city_name'] ?></option>
-								<?php } ?>
+						<div class="col-md-12 form-group" id="citySelectAdd">
+							<select name="city" id="cityId" class="form-control">
+								<option value="" selected disabled>Select your Country first</option>
 							</select>
 						</div>
 
@@ -286,3 +283,50 @@ if (isset($_POST['registerBtn'])) {
 <?php
 require "partial/footer.php"
 ?>
+
+<!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> -->
+
+
+<script>
+	
+	
+	
+	let countryId = document.getElementById('countryId');
+	let cityId = document.getElementById('citySelectAdd');
+
+	
+	console.log(countryId);
+	
+	function countryFunc(){
+
+		$.ajax({
+			url: 'countryDependent.php',
+			data: {
+				countryId: countryId.value
+			},
+			type: 'POST',
+			success:(data)=>{
+
+				$('#citySelectAdd').html(data)
+
+			}
+		})
+		
+		
+	}
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
