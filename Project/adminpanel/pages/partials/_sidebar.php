@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="../home/index.php">
               <i class="icon-grid menu-icon"></i>
               <span class="menu-title">Dashboard</span>
             </a>
@@ -55,6 +55,24 @@
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="../cities/addCities.php">Add City</a></li>
                 <li class="nav-item"> <a class="nav-link" href="../cities/viewCities.php">View Cities</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#users" aria-expanded="false" aria-controls="users">
+              <i class="icon-layout menu-icon"></i>
+              <span class="menu-title">User Roles & Permissions</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="users">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="../users/addUser.php">Add User</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../users/addUserRole.php">Add User Role</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../users/addUserPermission.php">Add User Permission</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../users/addPermission.php">Add Permission</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../users/viewUser.php">View User</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../users/viewUserRole.php">View User Role</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../users/viewUserPermission.php">View User Permission</a></li>
               </ul>
             </div>
           </li>

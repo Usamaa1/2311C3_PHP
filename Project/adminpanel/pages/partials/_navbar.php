@@ -1,4 +1,20 @@
 <?php ob_start() ?>
+
+
+<?php 
+
+session_start();
+if(!isset($_SESSION['userId']))
+{
+	header("location:../login.php");
+}
+
+
+?>
+
+
+
+
 <link rel="stylesheet" href="../../vendors/mdi/css/materialdesignicons.min.css">
 
 
@@ -81,7 +97,7 @@
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="../logout.php">
                 <i class="ti-power-off text-primary"></i>
                 Logout
               </a>
