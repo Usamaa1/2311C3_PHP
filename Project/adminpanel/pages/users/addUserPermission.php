@@ -39,7 +39,7 @@
 
             <!-- connection -->
             <!-- connection:../connection/connection.php -->
-            <?php require "../connection/connection.php" ?>
+            <!-- <?php require "../connection/connection.php" ?> -->
             <!-- connection -->
 
 

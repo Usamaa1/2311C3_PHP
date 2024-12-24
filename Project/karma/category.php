@@ -31,6 +31,34 @@
 	}
 
 
+	if(isset($_POST['searchBtn']))
+	{
+		$searchValue = $_POST['search'];
+
+		$productWiseQuery = "SELECT * FROM `products` WHERE `prod_name` LIKE '$searchValue%'";
+		$productWisePrepare = $connect->prepare($productWiseQuery);
+		// $productWisePrepare->bindParam(':searchValue',$searchValue, PDO::PARAM_STR);
+		$productWisePrepare->execute();
+		$productsData = $productWisePrepare->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+
+	if(isset($_POST['sortBtn']))
+	{
+
+		$productWiseQuery = "SELECT * FROM `products` ORDER BY `prod_name`";
+		$productWisePrepare = $connect->prepare($productWiseQuery);
+		// $productWisePrepare->bindParam(':searchValue',$searchValue, PDO::PARAM_STR);
+		$productWisePrepare->execute();
+		$productsData = $productWisePrepare->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+
+
+
+
+
+
 
 
 ?>
@@ -60,6 +88,11 @@
 					<ul class="main-categories">
 					<li class="main-nav-list"><a href="category.php"><span
 								 class="lnr lnr-arrow-right"></span>All<span class="number">(53)</span></a>			
+						</li>
+					<li class="main-nav-list">
+						<form  method="post">
+							<input type="submit" value="sort A to Z" name="sortBtn">
+						</form>			
 						</li>
 						<?php foreach($categoryData as $cd){  ?>
 						<li class="main-nav-list"><a href="category.php?categoryId=<?= $cd['category_id'] ?>"><span
@@ -101,6 +134,10 @@
 				</div>
 				<!-- End Filter Bar -->
 				<!-- Start Best Seller -->
+				<form method="post">
+					<input type="text" name="search" id="">
+					<input type="submit" name="searchBtn" value="Search">
+				</form>
 				<section class="lattest-product-area pb-40 category-list">
 					<div class="row">
 						<?php foreach($productsData as $pd){ ?>

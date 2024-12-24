@@ -1,19 +1,11 @@
 
 
 
-<?php require '../connection/connection.php' ?>
-
-
-<?php
-
-  $viewQuery = "SELECT * FROM `categories`";
-  $viewPrepare = $connect->prepare($viewQuery);
-  $viewPrepare->execute();
-  $categoriesData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
-
-
-
+<?php 
+// require '../connection/connection.php' 
 ?>
+
+
 
 
 
@@ -215,6 +207,18 @@
       <!-- partial:partials/_sidebar.html -->
      <?php require "../partials/_sidebar.php" ?>
       <!-- partial -->
+
+      <?php
+
+  $viewQuery = "SELECT * FROM `categories`";
+  $viewPrepare = $connect->prepare($viewQuery);
+  $viewPrepare->execute();
+  $categoriesData = $viewPrepare->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+?>
+
 
       <div class="main-panel">
         <div class="content-wrapper">
