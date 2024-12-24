@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 19, 2024 at 09:05 AM
+-- Generation Time: Dec 24, 2024 at 10:05 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -128,6 +128,74 @@ INSERT INTO `orders` (`order_id`, `user_id`, `prod_id`, `quantity`, `date_time`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `permissionrole`
+--
+
+CREATE TABLE `permissionrole` (
+  `role_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `permissionrole`
+--
+
+INSERT INTO `permissionrole` (`role_id`, `permission_id`) VALUES
+(3, 7),
+(3, 8),
+(3, 9),
+(3, 10),
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 7),
+(1, 8),
+(1, 9),
+(1, 10),
+(1, 11),
+(1, 12),
+(1, 13),
+(1, 14),
+(3, 14);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `permissions`
+--
+
+CREATE TABLE `permissions` (
+  `permissions_id` int(11) NOT NULL,
+  `permission_name` varchar(255) NOT NULL,
+  `permission_path` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `permissions`
+--
+
+INSERT INTO `permissions` (`permissions_id`, `permission_name`, `permission_path`) VALUES
+(1, 'Add User', 'users/addUser.php'),
+(2, 'Add User Role', 'users/addUserRole.php'),
+(3, 'Add User Permission', 'users/addUserPermission.php'),
+(4, 'View User', 'users/viewUser.php'),
+(5, 'View User Permission', 'users/viewUserPermission.php'),
+(6, 'View User Role', 'users/viewUserRole.php'),
+(7, 'Add City', 'cities/addCities.php'),
+(8, 'View Cities', 'cities/viewCities.php'),
+(9, 'Add Country', 'country/addCountry.php'),
+(10, 'View Country', 'country/viewCountry.php'),
+(11, 'Add Product', 'products/addProduct.php'),
+(12, 'View Product', 'products/viewProduct.php'),
+(13, 'Add Category', 'categories/addCategory.php'),
+(14, 'View Category', 'categories/viewCategory.php');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `products`
 --
 
@@ -170,7 +238,8 @@ CREATE TABLE `role` (
 
 INSERT INTO `role` (`role_id`, `role_name`) VALUES
 (1, 'Admin'),
-(2, 'User');
+(2, 'User'),
+(3, 'Sub Admin');
 
 -- --------------------------------------------------------
 
@@ -200,7 +269,8 @@ INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, 
 (2, 'admin', '', 'admin@admin.com', '$2y$10$gdGIFuQWpYJuVsRR9J2xtOSRKRCCf7L0MktxGD41G4ywlhM6J5tKC', '1', '1', 0, '', 1),
 (3, 'ammar', 'Ahmed', 'ytno791@gmail.com', '$2y$10$fDC85yNffC01murIwliGRefgz3LHzRiKs.wZB2hEnnKvzbtaj6Mvm', '1', '1', 978732487, '1234 marine garden', 2),
 (4, 'Huzaifa', 'Khan', 'cortexgame77@gmail.com', '$2y$10$YgkvVAMX62o5188bu4BodOAcFRZNeEWbMnvcOga9dT2DbiwRyK8RG', '2', '2', 988878734, '1234 marine garden', 2),
-(5, 'Zubair', 'Khan', 'zuubairkhan1015@gmail.com', '$2y$10$FaSnksobIEo/Gh4hFHwd2ugz8tcQc.pLH8dMT6K/006GylFL.zfKu', '2', '2', 987873487, '1234 marine garden', 2);
+(5, 'Zubair', 'Khan', 'zuubairkhan1015@gmail.com', '$2y$10$FaSnksobIEo/Gh4hFHwd2ugz8tcQc.pLH8dMT6K/006GylFL.zfKu', '2', '2', 987873487, '1234 marine garden', 2),
+(6, 'Amir', '', 'amir@gmail.com', '$2y$10$FHRE.hPmbDBWHtDIPzITFeKpZ9gpiPpHmHk/6pj3cCowigbNBxUa6', '', '', 0, '', 3);
 
 --
 -- Indexes for dumped tables
@@ -238,6 +308,19 @@ ALTER TABLE `country`
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
   ADD KEY `orders_ibfk_1` (`prod_id`);
+
+--
+-- Indexes for table `permissionrole`
+--
+ALTER TABLE `permissionrole`
+  ADD KEY `permissionrole_ibfk_2` (`role_id`),
+  ADD KEY `permission_id` (`permission_id`);
+
+--
+-- Indexes for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD PRIMARY KEY (`permissions_id`);
 
 --
 -- Indexes for table `products`
@@ -293,6 +376,12 @@ ALTER TABLE `orders`
   MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `permissions`
+--
+ALTER TABLE `permissions`
+  MODIFY `permissions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
@@ -302,13 +391,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
@@ -331,6 +420,13 @@ ALTER TABLE `cities`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`prod_id`) REFERENCES `products` (`prod_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `permissionrole`
+--
+ALTER TABLE `permissionrole`
+  ADD CONSTRAINT `permissionrole_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `permissionrole_ibfk_3` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`permissions_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `products`
